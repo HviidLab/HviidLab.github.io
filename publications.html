@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HviidLab Publications - Health Data Science Research">
+    <title>Publications | HviidLab</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --hover-color: #2980b9;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            background-color: var(--background-color);
+            font-family: Arial, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        #publications-list {
+            list-style-type: none;
+        }
+
+        .publication-item {
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .publication-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .publication-title {
+            font-size: 1.2em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .publication-authors {
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+
+        .publication-journal {
+            font-weight: bold;
+        }
+
+        .publication-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .publication-link:hover {
+            text-decoration: underline;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: var(--hover-color);
+        }
+
+        #loading {
+            text-align: center;
+            font-style: italic;
+            color: var(--primary-color);
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            .publication-item {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Recent Publications</h1>
+        </header>
+
+        <div id="loading">Loading publications...</div>
+        <ul id="publications-list"></ul>
+
+        <a href="index.html" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+    </div>
+
+    <script>
+        async function fetchPublications() {
+            const searchQuery = 'Hviid A[Author]';
+            const baseUrl = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
+            const searchUrl = `${baseUrl}esearch.fcgi?db=pubmed&term=${encodeURIComponent(searchQuery)}&retmax=10&sort=date&format=json`;
+            
+            try {
+                const searchResponse = await fetch(searchUrl);
+                const searchData = await searchResponse.json();
+                const pmids = searchData.esearchresult.idlist;
+
+                const summaryUrl = `${baseUrl}esummary.fcgi?db=pubmed&id=${pmids.join(',')}&format=json`;
+                const summaryResponse = await fetch(summaryUrl);
+                const summaryData = await summaryResponse.json();
+
+                return pmids.map(pmid => summaryData.result[pmid]);
+            } catch (error) {
+                console.error('Error fetching publications:', error);
+                return [];
+            }
+        }
+
+        function displayPublications(publications) {
+            const publicationsList = document.getElementById('publications-list');
+            const loadingElement = document.getElementById('loading');
+            
+            loadingElement.style.display = 'none';
+
+            publications.forEach(pub => {
+                const li = document.createElement('li');
+                li.className = 'publication-item';
+                
+                const authors = pub.authors.map(author => author.name).join(', ');
+                const journal = pub.fulljournalname || pub.source;
+                const year = pub.pubdate.split(' ')[0];
+
+                li.innerHTML = `
+                    <div class="publication-title">${pub.title}</div>
+                    <div class="publication-authors">${authors}</div>
+                    <div class="publication-journal">${journal}, ${year}</div>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/${pub.uid}" class="publication-link" target="_blank">View on PubMed</a>
+                `;
+                publicationsList.appendChild(li);
+            });
+        }
+
+        async function loadPublications() {
+            const publications = await fetchPublications();
+            displayPublications(publications);
+        }
+
+        // Load publications when the page is ready
+        document.addEventListener('DOMContentLoaded', loadPublications);
+    </script>
+</body>
+</html>
