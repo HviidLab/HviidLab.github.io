@@ -6,6 +6,7 @@
     <meta name="description" content="HviidLab Publications - Health Data Science Research">
     <title>Publications | HviidLab</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>
     <style>
         :root {
             --primary-color: #3498db;
@@ -54,10 +55,26 @@
             margin-bottom: 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
         }
 
         .publication-item:hover {
             transform: translateY(-5px);
+        }
+
+        .publication-details {
+            flex: 3;
+            padding-right: 20px;
+        }
+
+        .altmetric-badge {
+            flex: 1;
+            min-width: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
         }
 
         .publication-title {
@@ -107,13 +124,13 @@
             color: var(--primary-color);
         }
 
-        @media screen and (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
-
+        @media screen and (max-width: 768px) {
             .publication-item {
-                padding: 15px;
+                flex-direction: column;
+            }
+            
+            .altmetric-badge {
+                margin-top: 20px;
             }
         }
     </style>
@@ -160,7 +177,7 @@
             
             loadingElement.style.display = 'none';
 
-            publications.forEach(pub => {
+            publications.forEach((pub) => {
                 const li = document.createElement('li');
                 li.className = 'publication-item';
                 
@@ -169,13 +186,23 @@
                 const year = pub.pubdate.split(' ')[0];
 
                 li.innerHTML = `
-                    <div class="publication-title">${pub.title}</div>
-                    <div class="publication-authors">${authors}</div>
-                    <div class="publication-journal">${journal}, ${year}</div>
-                    <a href="https://pubmed.ncbi.nlm.nih.gov/${pub.uid}" class="publication-link" target="_blank">View on PubMed</a>
+                    <div class="publication-details">
+                        <div class="publication-title">${pub.title}</div>
+                        <div class="publication-authors">${authors}</div>
+                        <div class="publication-journal">${journal}, ${year}</div>
+                        <a href="https://pubmed.ncbi.nlm.nih.gov/${pub.uid}" class="publication-link" target="_blank">View on PubMed</a>
+                    </div>
+                    <div class="altmetric-badge">
+                        <div class='altmetric-embed' data-badge-type='donut' data-badge-popover='right' data-pmid='${pub.uid}'></div>
+                    </div>
                 `;
                 publicationsList.appendChild(li);
             });
+
+            // Trigger Altmetric badges to load
+            if (window._altmetric) {
+                window._altmetric.embed_init();
+            }
         }
 
         async function loadPublications() {
