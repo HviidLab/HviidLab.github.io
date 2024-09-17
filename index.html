@@ -3,61 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HviidLab</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <meta name="description" content="HviidLab - Advancing Health Data Science Research">
+    <meta name="keywords" content="health data science, research, HviidLab">
+    <title>HviidLab | Health Data Science Research</title>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #3498db;
+            --hover-color: #2980b9;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body, html {
             height: 100%;
-            margin: 0;
+            background-color: var(--background-color);
+            font-family: Arial, sans-serif;
+            color: var(--text-color);
+        }
+
+        .container {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: white;
+            justify-content: space-between;
+            height: 100%;
+            padding: 20px;
         }
+
         .logo-container {
             flex-grow: 1;
             display: flex;
             justify-content: center;
             align-items: center;
         }
+
         .logo {
-            max-width: 1000px;  /* Increased from 300px */
-            max-height: 1000px; /* Increased from 300px */
-            width: 80%;        /* Ensures responsiveness */
-            height: auto;      /* Maintains aspect ratio */
+            max-width: 90%;
+            max-height: 50vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            transition: transform 0.3s ease;
         }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
         .icon-nav {
             display: flex;
-            justify-content: center;
-            gap: 50px;         /* Increased from 30px for more spacing */
-            padding: 30px 0;   /* Increased padding */
+            justify-content: space-around;
             width: 100%;
-            background-color: white;
+            padding: 20px 0;
         }
+
         .icon-nav a {
-            color: #3498db;
-            font-size: 72px;   /* Increased from 24px */
+            color: var(--primary-color);
+            font-size: 24px;
             text-decoration: none;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            padding: 10px;
+            border-radius: 50%;
         }
-        .icon-nav a:hover {
-            color: #2980b9;
+
+        .icon-nav a:hover, .icon-nav a:focus {
+            color: var(--hover-color);
+            background-color: rgba(52, 152, 219, 0.1);
+            outline: none;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .logo, .icon-nav a {
+                transition: none;
+            }
+        }
+
+        /* Tablet and larger */
+        @media screen and (min-width: 768px) {
+            .logo {
+                max-width: 70%;
+                max-height: 60vh;
+            }
+
+            .icon-nav {
+                justify-content: center;
+                gap: 40px;
+            }
+
+            .icon-nav a {
+                font-size: 30px;
+            }
+        }
+
+        /* Desktop and larger */
+        @media screen and (min-width: 1024px) {
+            .logo {
+                max-width: 60%;
+                max-height: 70vh;
+            }
+
+            .icon-nav {
+                gap: 60px;
+            }
+
+            .icon-nav a {
+                font-size: 36px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="logo-container">
-        <img src="HviidLab_Logo.PNG" alt="HviidLab Logo" class="logo">
-    </div>
+    <div class="container">
+        <div class="logo-container">
+            <img src="HviidLab_Logo.PNG" alt="HviidLab Logo" class="logo">
+        </div>
 
-    <nav class="icon-nav">
-        <a href="publications.html" title="Publications"><i class="fas fa-book"></i></a>
-        <a href="cv.html" title="CV"><i class="fas fa-file-alt"></i></a>
-        <a href="social.html" title="Social Media"><i class="fas fa-share-alt"></i></a>
-        <a href="projects.html" title="Projects"><i class="fas fa-project-diagram"></i></a>
-        <a href="contact.html" title="Contact"><i class="fas fa-envelope"></i></a>
-    </nav>
+        <nav class="icon-nav" aria-label="Main Navigation">
+            <a href="publications.html" aria-label="Publications"><i class="fas fa-book" aria-hidden="true"></i></a>
+            <a href="cv.html" aria-label="Curriculum Vitae"><i class="fas fa-file-alt" aria-hidden="true"></i></a>
+            <a href="social.html" aria-label="Social Media"><i class="fas fa-share-alt" aria-hidden="true"></i></a>
+            <a href="projects.html" aria-label="Projects"><i class="fas fa-project-diagram" aria-hidden="true"></i></a>
+            <a href="contact.html" aria-label="Contact"><i class="fas fa-envelope" aria-hidden="true"></i></a>
+        </nav>
+    </div>
 
     <script>
         document.querySelectorAll('.icon-nav a').forEach(link => {
